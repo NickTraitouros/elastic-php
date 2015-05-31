@@ -24,6 +24,29 @@ class elastic{
         return $this->curl->post($this->endpoint . '/' . $index . '/' . $type . '/', $document);
     }
 
+    public function delete_document($index, $type, $id) {
+        echo $this->endpoint , '/' . $index . '/' . $type . '/' . $id; die();
+    }
+
+    public function get_field_from_response($response, $field) {
+        $decoded_reponse = json_decode($response);
+        return $decoded_reponse->$field;
+    }
+
+    public function term_query_document_by_property($index, $type, $field, $value) {
+
+        $body = '
+        {
+          "query": {
+            "term": {
+              "'.$field.'": "'.$value.'"
+            }
+          }
+        }';
+
+        return $this->curl->post($this->endpoint . '/' . $index . '/' . $type . '/_search', $body);
+    }
+
 }
 
 ?>
