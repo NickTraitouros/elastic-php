@@ -1,6 +1,6 @@
 <?php
 
-require_once 'curl/curl.php';
+require_once 'curl/lib/curl.php';
 
 class elastic{
 
@@ -16,8 +16,16 @@ class elastic{
         return $this->curl->put($this->endpoint . '/' . $index . '/');
     }
 
+    public function delete_index($index){
+        return $this->curl->delete($this->endpoint . '/' $index .'/');
+    }
+
     public function add_mapping($index, $type, $mapping) {
         return $this->curl->put($this->endpoint . '/' . $index . '/_mapping/' . $type, $mapping);
+    }
+
+    public function get_mapping($index, $type) {
+        return $this->curl->get($this->endpoint . '/' . $index . '/' . '_mapping' . '/' . $type);
     }
 
     public function add_document($index, $type, $document) {
