@@ -1,0 +1,1 @@
+Very barebones PHP wrapper for elasticsearch
