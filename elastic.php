@@ -17,7 +17,7 @@ class elastic{
     }
 
     public function delete_index($index){
-        return $this->curl->delete($this->endpoint . '/' $index .'/');
+        return $this->curl->delete($this->endpoint . '/' . $index .'/');
     }
 
     public function add_mapping($index, $type, $mapping) {
@@ -41,18 +41,70 @@ class elastic{
         return $decoded_reponse->$field;
     }
 
-    public function term_query_document_by_property($index, $type, $field, $value) {
+    public function bool_query($index, $type, $must=array(), $must_not=array(), $should=array()) {
+
+        $must_expression = "";
+
+        if ($must){
+            foreach($must as $field=>$value) {
+                $must_expression .= '{"match" : { "'.$field.'" : "'.$value.'" }},';
+            }
+            $must_expression = substr($must_expression, 0, -1);
+        }
+
+        $must_not_expression = "";
+
+        if ($must_not){
+
+            foreach($must_not as $field=>$value) {
+                $must_not_expression .= '{"match" : { "'.$field.'" : "'.$value.'" }},';
+            }
+
+            $must_not_expression = substr($must_not_expression, 0, -1);
+        }
+
+        $should_expression = "";
+
+        if ($should){
+            foreach($should as $field=>$value) {
+                $should_expression .= '{"match" : { "'.$field.'" : "'.$value.'" }},';
+            }
+
+            $should_expression = substr($should_expression, 0, -1);
+        }
 
         $body = '
         {
-          "query": {
-            "term": {
-              "'.$field.'": "'.$value.'"
-            }
-          }
+            "query": {
+                "bool": {
+                    "must" : ['.$must_expression.'],
+                    "must_not" : ['.$must_not_expression.'],
+                    "should" : ['.$should_expression.']
+                    }
+                }
         }';
 
         return $this->curl->post($this->endpoint . '/' . $index . '/' . $type . '/_search', $body);
+    }
+
+    public function match_query($index, $type, $field, $value, $operator = "or"){
+
+        $body = '
+        {
+            "query":{
+                "match" : {
+                    "'.$field.'" : {
+                    "query" : "'.$value.'",
+                    "operator" : "'.$operator.'"
+                    }
+                }
+             }
+        }
+        ';
+
+        return $this->curl->post($this->endpoint . '/' . $index . '/' . $type . '/_search', $body);
+
+
     }
 
 }
