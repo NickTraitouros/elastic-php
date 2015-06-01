@@ -1,6 +1,6 @@
 <?php
 
-require_once 'curl/lib/curl.php';
+require 'vendor/autoload.php';
 
 class elastic{
 
@@ -87,7 +87,7 @@ class elastic{
         return $this->curl->post($this->endpoint . '/' . $index . '/' . $type . '/_search', $body);
     }
 
-    public function match_query($index, $type, $field, $value, $operator = "or"){
+    public function match_query($index, $type, $field, $value, $operator = "or") {
 
         $body = '
         {
@@ -104,9 +104,20 @@ class elastic{
 
         return $this->curl->post($this->endpoint . '/' . $index . '/' . $type . '/_search', $body);
 
-
     }
 
+    public function multi_match_query($index, $type, $fields, $value) {
+        $body = '
+        {
+            "query": {
+              "multi_match" : {
+                "query":      "' . $value . '",
+                "type":       "best_fields",
+                "fields":     [ "' . implode('","',$fields) . '" ]
+              }
+            }
+        }';
+    }
 }
 
 ?>
