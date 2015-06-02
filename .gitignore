@@ -1,2 +1,4 @@
 vendor/
 runner.php
+composer.phar
+curl/
