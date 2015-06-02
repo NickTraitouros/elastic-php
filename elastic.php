@@ -24,6 +24,10 @@ class elastic{
         return $this->curl->put($this->endpoint . '/' . $index . '/_mapping/' . $type, $mapping);
     }
 
+    public function delete_mapping($index, $type) {
+        return $this->curl->delete($this->endpoint . '/' . $index . '/_mapping/' . $type);
+    }
+
     public function get_mapping($index, $type) {
         return $this->curl->get($this->endpoint . '/' . $index . '/' . '_mapping' . '/' . $type);
     }
