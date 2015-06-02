@@ -1,6 +1,6 @@
 <?php
 
-require 'vendor/autoload.php';
+require_once "curl/lib/curl.php";
 
 class elastic{
 
